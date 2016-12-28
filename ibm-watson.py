@@ -129,22 +129,22 @@ def speech_to_text_with_audio(
 
 
 if __name__ == '__main__':
-    # 1. Calling Text to Speech
-    # Text to speech example
-    msg = 'Hello there. This is a testing.'
-    audio_path = text_to_speech(msg, 'output/output.wav')
-    print('\n')
-    print('Audio Path:', audio_path)
+    # # 1. Calling Text to Speech
+    # # Text to speech example
+    # msg = 'Hello there. This is a testing.'
+    # audio_path = text_to_speech(msg, 'output/output.wav')
+    # print('\n')
+    # print('Audio Path:', audio_path)
 
-    # 2. Calling Speech to Text
-    # Speech to text example
-    text = speech_to_text(
-        file_name='recordings/2nd_Test.wav')
-    print('\n')
-    print('Final Text:', text)
+    # # 2. Calling Speech to Text
+    # # Speech to text example
+    # text = speech_to_text(
+    #     file_name='recordings/2nd_Test.wav')
+    # print('\n')
+    # print('Final Text:', text)
 
     # 3. Calling Speech to Text with confirmed audio
     return_data = speech_to_text_with_audio(
-        audio_input='recordings/2nd_Test.wav', threads=10)
+        audio_input='recordings/2nd_Test.wav')
     print('\n')
     print(return_data)
