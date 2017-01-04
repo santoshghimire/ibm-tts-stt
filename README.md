@@ -11,8 +11,20 @@ Copy the file auth_example.json to auth.json and update the credentials.
 
 ## Examples                                                                                            
 
-There are three examples at the bottom of the file ibm-watson.py. Run only one example at a time.
+Running for text to speech.
 
 `                 
-$ python ibm-watson.py
+$ python ibm-watson.py -authfile auth.json -func tts -text Hello there
+`
+
+Running for speech to text.
+
+`                 
+$ python ibm-watson.py -authfile auth.json -func stt -inputaudiofile recordings/2nd_Test.wav
+`
+
+Running for speech to text.
+
+`                 
+$ python ibm-watson.py -authfile auth.json -func sttwa -inputaudiofile recordings/2nd_Test.wav
 `

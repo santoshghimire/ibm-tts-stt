@@ -2,6 +2,7 @@ import json
 import Queue
 import base64
 import os
+import argparse
 from os.path import basename
 from twisted.internet import ssl, reactor
 from watson_developer_cloud import TextToSpeechV1
@@ -10,12 +11,12 @@ from autobahn.twisted.websocket import connectWS
 from sttClient import Utils, WSInterfaceFactory, WSInterfaceProtocol
 
 
-def text_to_speech(text, file_path):
+def text_to_speech(text, file_path, auth_file):
     """
     Convert given text to speech audio file saved in given path.
     """
     try:
-        with open('auth.json') as authfile:
+        with open(auth_file) as authfile:
             auth_data = json.load(authfile)
             username = auth_data['tts']['username']
             password = auth_data['tts']['password']
@@ -37,8 +38,8 @@ def text_to_speech(text, file_path):
 
 
 def speech_to_text(
-    file_name, output_dir='output', opt_out=False,
-    tokenauth=None, auth_file='auth.json',
+    file_name, auth_file, output_dir='output', opt_out=False,
+    tokenauth=None,
     model='en-US_BroadbandModel', content_type='audio/wav',
     threads=1
 ):
@@ -104,8 +105,8 @@ def speech_to_text(
 
 
 def speech_to_text_with_audio(
-    audio_input, output_dir='output', opt_out=False,
-    tokenauth=None, auth_file='auth.json',
+    audio_input, auth_file, output_dir='output', opt_out=False,
+    tokenauth=None,
     model='en-US_BroadbandModel', content_type='audio/wav',
     threads=1
 ):
@@ -129,22 +130,60 @@ def speech_to_text_with_audio(
 
 
 if __name__ == '__main__':
-    # # 1. Calling Text to Speech
-    # # Text to speech example
-    # msg = 'Hello there. This is a testing.'
-    # audio_path = text_to_speech(msg, 'output/output.wav')
-    # print('\n')
-    # print('Audio Path:', audio_path)
 
-    # # 2. Calling Speech to Text
-    # # Speech to text example
-    # text = speech_to_text(
-    #     file_name='recordings/2nd_Test.wav')
-    # print('\n')
-    # print('Final Text:', text)
+    # parse command line parameters
+    parser = argparse.ArgumentParser(
+        description=('Script to convert text to speech, speech to text '
+                     'and speech to text with audio using IBM Watson API'))
+    parser.add_argument(
+        '-authfile', action='store', dest='authfile',
+        help="Path to authentication file auth.json",
+        required=True)
+    parser.add_argument(
+        '-function', action='store', dest='func', default='sttwa',
+        choices=['tts', 'stt', 'sttwa'],
+        help='Name of function: tts: Text to speech, '
+        'stt: speech to text, sttwa: speech to text with audio'
+    )
+    parser.add_argument(
+        '-text', action='store', dest='text',
+        help='Text to convert to speech')
+    parser.add_argument(
+        '-inputaudiofile', action='store', dest='inputaudiofile',
+        help='Path to audio file to convert to text')
+    parser.add_argument(
+        '-outaudiofile', action='store', dest='outaudiofile',
+        default='output/output.wav',
+        help='Path to the output audio file.')
+    args = parser.parse_args()
 
-    # 3. Calling Speech to Text with confirmed audio
-    return_data = speech_to_text_with_audio(
-        audio_input='recordings/2nd_Test.wav')
-    print('\n')
-    print(return_data)
+    print(args)
+    if args.func == 'tts':
+        # 1. Calling Text to Speech
+        # Text to speech example
+        if not args.text:
+            raise(ValueError, 'text value is required. Use -text argument.')
+        audio_path = text_to_speech(
+            text=args.text, file_path=args.outaudiofile,
+            auth_file=args.authfile)
+        print('Audio Path:', audio_path)
+    elif args.func == 'stt':
+        # 2. Calling Speech to Text
+        # Speech to text example
+        if not args.inputaudiofile:
+            raise(
+                ValueError,
+                'inputaudiofile value is required.')
+        text = speech_to_text(
+            # 'recordings/2nd_Test.wav'
+            file_name=args.inputaudiofile, auth_file=args.authfile)
+        print('Final Text:', text)
+    else:
+        # 3. Calling Speech to Text with confirmed audio
+        if not args.inputaudiofile:
+            raise(
+                ValueError,
+                'inputaudiofile value is required.')
+        return_data = speech_to_text_with_audio(
+            audio_input=args.inputaudiofile, auth_file=args.authfile)
+        print(return_data)
