@@ -3,7 +3,6 @@ import Queue
 import base64
 import os
 import argparse
-from os.path import basename
 from twisted.internet import ssl, reactor
 from watson_developer_cloud import TextToSpeechV1
 
@@ -28,7 +27,7 @@ def text_to_speech(text, file_path, auth_file):
     )
     voice = 'en-US_MichaelVoice'
     accept = 'audio/wav'
-    outdir = os.path.dirname(args.outaudiofile)
+    outdir = os.path.dirname(file_path)
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     with open(file_path, 'wb') as audio_file:
@@ -111,7 +110,7 @@ def speech_to_text_with_audio(
     audio_input, auth_file, output_dir='output', opt_out=False,
     tokenauth=None,
     model='en-US_BroadbandModel', content_type='audio/wav',
-    threads=1
+    threads=1, outaudiofile='output/output.wav'
 ):
     """
     Convert given audio file to text using speech_to_text function
@@ -124,12 +123,10 @@ def speech_to_text_with_audio(
         model=model, content_type=content_type,
         threads=threads
     )
-    audio_file_name = basename(audio_input)
-    audio_file_output = os.path.join(output_dir, audio_file_name)
     audio_output_path = False
     if text:
         audio_output_path = text_to_speech(
-            text=text, file_path=audio_file_output, auth_file=auth_file)
+            text=text, file_path=outaudiofile, auth_file=auth_file)
     return {'text': text, 'audio_file': audio_output_path}
 
 
@@ -188,5 +185,6 @@ if __name__ == '__main__':
                 ValueError,
                 'inputaudiofile value is required.')
         return_data = speech_to_text_with_audio(
-            audio_input=args.inputaudiofile, auth_file=args.authfile)
+            audio_input=args.inputaudiofile, auth_file=args.authfile,
+            outaudiofile=args.outaudiofile)
         print(return_data)

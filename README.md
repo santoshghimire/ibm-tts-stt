@@ -14,7 +14,7 @@ Copy the file auth_example.json to auth.json and update the credentials.
 Running for text to speech.
 
 `                 
-$ python ibm-watson.py -authfile auth.json -func tts -text Hello there
+$ python ibm-watson.py -authfile auth.json -func tts -outaudiofile output/output.wav -text Hello there
 `
 
 Running for speech to text.
@@ -23,10 +23,10 @@ Running for speech to text.
 $ python ibm-watson.py -authfile auth.json -func stt -inputaudiofile recordings/2nd_Test.wav
 `
 
-Running for speech to text.
+Running for speech to text with audio.
 
 `                 
-$ python ibm-watson.py -authfile auth.json -func sttwa -inputaudiofile recordings/2nd_Test.wav
+$ python ibm-watson.py -authfile auth.json -func sttwa -inputaudiofile recordings/2nd_Test.wav -outaudiofile output/output.wav
 `
 
 To get help:
