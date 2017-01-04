@@ -28,3 +28,9 @@ Running for speech to text.
 `                 
 $ python ibm-watson.py -authfile auth.json -func sttwa -inputaudiofile recordings/2nd_Test.wav
 `
+
+To get help:
+
+`                 
+$ python ibm-watson.py -h
+`
