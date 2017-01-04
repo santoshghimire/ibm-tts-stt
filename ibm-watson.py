@@ -28,6 +28,9 @@ def text_to_speech(text, file_path, auth_file):
     )
     voice = 'en-US_MichaelVoice'
     accept = 'audio/wav'
+    outdir = os.path.dirname(args.outaudiofile)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
     with open(file_path, 'wb') as audio_file:
         audio_file.write(
             tts.synthesize(
@@ -125,7 +128,8 @@ def speech_to_text_with_audio(
     audio_file_output = os.path.join(output_dir, audio_file_name)
     audio_output_path = False
     if text:
-        audio_output_path = text_to_speech(text, audio_file_output)
+        audio_output_path = text_to_speech(
+            text=text, file_path=audio_file_output, auth_file=auth_file)
     return {'text': text, 'audio_file': audio_output_path}
 
 
@@ -157,7 +161,6 @@ if __name__ == '__main__':
         help='Path to the output audio file.')
     args = parser.parse_args()
 
-    print(args)
     if args.func == 'tts':
         # 1. Calling Text to Speech
         # Text to speech example
