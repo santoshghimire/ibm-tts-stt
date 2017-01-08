@@ -127,7 +127,9 @@ def speech_to_text_with_audio(
     if text:
         audio_output_path = text_to_speech(
             text=text, file_path=outaudiofile, auth_file=auth_file)
-    return {'text': text, 'audio_file': audio_output_path}
+    return json.dumps(
+        {'text': text, 'audio_file': audio_output_path}
+    )
 
 
 if __name__ == '__main__':
